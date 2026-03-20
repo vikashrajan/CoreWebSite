@@ -1,0 +1,72 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container-fluid p-0 mb-5">
+    <div class="bg-primary text-white text-center py-5 hero-section">
+        <div class="container py-5">
+            <h1 class="display-4 fw-bold mb-3">Welcome to Vikash CoreWebSite</h1>
+            <p class="lead mb-4">Building professional enterprise applications with ASP.NET Core 8</p>
+            <a asp-action="Contact" class="btn btn-light btn-lg text-primary fw-bold px-4 rounded-pill">Get Started</a>
+            <a asp-action="Projects" class="btn btn-outline-light btn-lg fw-bold px-4 rounded-pill ms-2">View Portfolio</a>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">What We Do</h2>
+        <p class="text-muted">High-quality services for modern businesses</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <h5 class="card-title fw-bold">Web Development</h5>
+                    <p class="card-text text-muted">Custom full-stack solutions built efficiently on the .NET ecosystem.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <h5 class="card-title fw-bold">Cloud Deployment</h5>
+                    <p class="card-text text-muted">Ready-to-deploy architectural setups optimized for Azure App Service.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <h5 class="card-title fw-bold">CI/CD Pipeline</h5>
+                    <p class="card-text text-muted">Continuous integration using GitHub Actions or Azure DevOps made easy.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Our Recent Portfolio</h2>
+            <p class="text-muted">A glimpse over our latest works</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="p-5 bg-white shadow-sm rounded">
+                    <h4 class="fw-bold">Enterprise Portal CRM</h4>
+                    <p>Internal tool serving 10M+ operations per day developed within 6 months.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-5 bg-white shadow-sm rounded">
+                    <h4 class="fw-bold">E-Commerce Platform</h4>
+                    <p>Scale ready online store running on Azure Web App processing 5k orders/hour.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
