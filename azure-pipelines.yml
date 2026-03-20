@@ -6,7 +6,7 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: 'YOUR_AZURE_SERVICE_CONNECTION_NAME'
+  azureSubscription: 'APIServiceConnection'
   
   # Web app name
   webAppName: 'vikash-corewebsite'
