@@ -1,38 +1,27 @@
-# Azure DevOps CI/CD Pipeline for ASP.NET Core 8 Web App
-# This pipeline builds the project and deploys it to an Azure Web App.
-
 trigger:
 - main
 
+pool:
+  name: 'Default'
+
+
 variables:
-  # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: 'APIServiceConnection'
-  
-  # Web app name
-  webAppName: 'staticwebsite'
-  
-  # Environment name
-  environmentName: 'staticwebsite'
-  
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  buildConfiguration: 'Release'
+  azureServiceConnection: 'staticwebsitegroup' # Update this in Azure DevOps
+  webAppName: 'staticwebsite' # Update this in Azure DevOps
 
 stages:
 - stage: Build
-  displayName: Build stage
+  displayName: 'Build and Publish Stage'
   jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-
+  - job: BuildJob
+    displayName: 'Build and Publish'
     steps:
     - task: UseDotNet@2
-      displayName: 'Install .NET 8 SDK'
+      displayName: 'Install .NET Core SDK'
       inputs:
-        packageType: 'sdk'
-        version: '8.x'
-        includePreviewVersions: false
+        version: '9.x'
+        performMultiLevelLookup: true
 
     - task: DotNetCoreCLI@2
       displayName: 'Restore dependencies'
@@ -41,45 +30,47 @@ stages:
         projects: '**/*.csproj'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Build the project'
+      displayName: 'Build Web API'
       inputs:
         command: 'build'
         projects: '**/*.csproj'
-        arguments: '--configuration Release'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Publish the project'
+      displayName: 'Publish Web API'
       inputs:
         command: 'publish'
+        publishWebProjects: false
         projects: '**/*.csproj'
-        arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
         zipAfterPublish: true
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifacts'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifacts'
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
+        targetPath: '$(Build.ArtifactStagingDirectory)/publish'
+        artifact: 'drop'
+        publishLocation: 'pipeline'
 
 - stage: Deploy
-  displayName: Deploy stage
+  displayName: 'Deploy to Azure'
   dependsOn: Build
   condition: succeeded()
   jobs:
-  - deployment: Deploy
-    displayName: Deploy
-    environment: $(environmentName)
-    pool:
-      vmImage: $(vmImageName)
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureWebApp@1
-            displayName: 'Deploy to Azure Web App'
-            inputs:
-              azureSubscription: $(azureSubscription)
-              appType: 'webAppLinux'
-              appName: $(webAppName)
-              package: '$(Pipeline.Workspace)/drop/*.zip'
+  - job: DeployJob
+    displayName: 'Deploy App Service'
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'drop'
+        targetPath: '$(Pipeline.Workspace)/drop'
+
+    - task: AzureRmWebAppDeployment@4
+      displayName: 'Deploy to Azure App Service'
+      inputs:
+        ConnectionType: 'AzureRM'
+        azureSubscription: '$(azureServiceConnection)'
+        appType: 'webApp'
+        WebAppName: '$(webAppName)'
+        packageForLinux: '$(Pipeline.Workspace)/drop/**/*.zip'
