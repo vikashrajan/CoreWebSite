@@ -9,10 +9,10 @@ variables:
   azureSubscription: 'APIServiceConnection'
   
   # Web app name
-  webAppName: 'vikash-corewebsite'
+  webAppName: 'staticwebsite'
   
   # Environment name
-  environmentName: 'vikash-corewebsite'
+  environmentName: 'staticwebsite'
   
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
